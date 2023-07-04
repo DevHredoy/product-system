@@ -20,10 +20,7 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @GetMapping("/")
-    public String goHome(){
-        return "HEY!!, You are at Homepage";
-    }
+
     @GetMapping("/product/all")
     public List<Product> findAllProducts(){
         return productService.findAllProducts();
@@ -40,19 +37,21 @@ public class ProductController {
     }
 
 
-    @PutMapping("/cars/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable("id") int prodId,@RequestBody Product newProd) {
-        return ResponseEntity.ok().body(productService.updateProduct(prodId,newProd));
+    @PutMapping("/product/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public Product updateProduct(@PathVariable("id") int prodId,@RequestBody Product newProd) {
+        return productService.updateProduct(prodId,newProd);
+
 
     }
 
 
 
-  @DeleteMapping("{id}")
-  public ResponseEntity<Object> deleteProduct(@PathVariable("id") int prodId){
+  @DeleteMapping("/product/{id}")
+  @PreAuthorize("hasAuthority('ADMIN')")
+  public void deleteProduct(@PathVariable("id") int prodId){
 productService.deleteProduct(prodId);
 
-      return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 
   }
 }
